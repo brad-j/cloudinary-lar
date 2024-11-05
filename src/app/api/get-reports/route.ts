@@ -1,23 +1,21 @@
-// app/api/cloudinary-reports/route.ts
+// app/api/get-reports/route.ts
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    // Get the search params from the request
     const searchParams = request.nextUrl.searchParams;
-    const maxResults = searchParams.get('max_results') || '10';
+    const maxResults = searchParams.get('max_results') || '100';
     const nextCursor = searchParams.get('next_cursor') || '';
 
-    // Construct the URL with query parameters
-    const baseUrl = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources_last_access_reports`;
-    const url = new URL(baseUrl);
-    url.searchParams.set('max_results', maxResults);
+    const url = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources_last_access_reports`;
+    const apiUrl = new URL(url);
+    apiUrl.searchParams.set('max_results', maxResults);
     if (nextCursor) {
-      url.searchParams.set('next_cursor', nextCursor);
+      apiUrl.searchParams.set('next_cursor', nextCursor);
     }
 
-    const response = await fetch(url.toString(), {
+    const response = await fetch(apiUrl.toString(), {
       headers: {
         Authorization: `Basic ${Buffer.from(
           `${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}`
@@ -34,11 +32,26 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    const filteredReports = data.reports.filter(
+      (report: { created_at: string | number | Date }) =>
+        new Date(report.created_at) >= sixMonthsAgo
+    );
+
+    return NextResponse.json({
+      reports: filteredReports,
+      next_cursor: data.next_cursor,
+    });
   } catch (error) {
     console.error('Error in route handler:', error);
     return NextResponse.json(
-      { error: 'Internal server error', message: (error as Error).message },
+      {
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }

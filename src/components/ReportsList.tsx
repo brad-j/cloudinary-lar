@@ -51,7 +51,6 @@ export default function ReportsList() {
 
       const data = await response.json();
 
-      // Use the "reports" array from the response
       const reportsData = data.reports || [];
 
       if (cursor) {
@@ -90,6 +89,29 @@ export default function ReportsList() {
     });
   };
 
+  const isOldReport = (createdAt: string) => {
+    const reportDate = new Date(createdAt);
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    return reportDate < sixMonthsAgo;
+  };
+
+  const getReportAge = (createdAt: string) => {
+    const reportDate = new Date(createdAt);
+    const now = new Date();
+    const diffMonths =
+      (now.getFullYear() - reportDate.getFullYear()) * 12 +
+      (now.getMonth() - reportDate.getMonth());
+
+    if (diffMonths < 1) {
+      return 'Less than a month old';
+    } else if (diffMonths === 1) {
+      return '1 month old';
+    } else {
+      return `${diffMonths} months old`;
+    }
+  };
+
   if (isLoading && reports.length === 0) {
     return (
       <Card>
@@ -117,7 +139,10 @@ export default function ReportsList() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5" />
-          Generated Reports
+          Generated Reports{' '}
+          <span className="text-neutral-500 text-xs">
+            {reports.length} Reports
+          </span>
         </CardTitle>
       </CardHeader>
       <CardContent>

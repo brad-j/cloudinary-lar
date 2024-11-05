@@ -47,7 +47,7 @@ export default function ReportDetails() {
     try {
       setIsLoading(true);
       const queryParams = new URLSearchParams({
-        max_results: '10',
+        max_results: '25', // Match the smaller batch size
       });
 
       if (cursor) {
@@ -57,25 +57,26 @@ export default function ReportDetails() {
       const response = await fetch(
         `/api/get-report/${params.id}?${queryParams.toString()}`
       );
+
       if (!response.ok) {
-        throw new Error('Failed to fetch report details');
+        const errorData = await response.json();
+        console.error('Error details:', errorData);
+        throw new Error(errorData.error || 'Failed to fetch report details');
       }
 
-      const data: ApiResponse = await response.json();
+      const data = await response.json();
 
       if (cursor) {
         setAssets((prev) => [...prev, ...data.resources]);
       } else {
-        setAssets(data.resources);
+        setAssets(data.resources || []);
       }
 
       setNextCursor(data.next_cursor || null);
       setHasMore(!!data.next_cursor);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Fetch error:', err);
-      setError(
-        err instanceof Error ? err.message : 'An unknown error occurred'
-      );
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }
