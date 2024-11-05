@@ -2,6 +2,8 @@
 
 A Next.js application that provides a user interface for managing and viewing Cloudinary's Last Access Reports. This tool helps you track when your Cloudinary assets were last accessed.
 
+> **Disclaimer**: This is an independent, open-source project and is not officially affiliated with, endorsed by, or connected to Cloudinary. While it uses Cloudinary's API, it is maintained independently.
+
 ## Features
 
 - Generate new Last Access Reports
