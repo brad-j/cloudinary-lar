@@ -125,6 +125,10 @@ Remember to set the environment variables on your hosting platform.
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Acknowledgements
+
+Made with ❤️ by [Brad Johnson](https://bradjohnson.io).
+
 ## License
 
 [MIT](LICENSE)
