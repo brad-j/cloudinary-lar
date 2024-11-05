@@ -1,7 +1,7 @@
-// app/components/ReportsList.tsx
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -145,7 +145,12 @@ export default function ReportsList() {
                   {reports.map((report) => (
                     <TableRow key={report.id}>
                       <TableCell className="font-mono truncate max-w-[200px]">
-                        {report.id}
+                        <Link
+                          href={`/${report.id}`}
+                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {report.id}
+                        </Link>
                       </TableCell>
                       <TableCell>
                         <span
