@@ -22,13 +22,14 @@ export default function GenerateReportForm() {
   const [formData, setFormData] = React.useState({
     from_date: '',
     to_date: '',
-    resource_type: 'image',
+    resource_type: '',
     exclude_folders: '',
-    sort_by: 'created_at',
+    sort_by: 'accessed_at',
+    sort_order: 'desc',
   });
 
-  const resourceTypes = ['image', 'video', 'raw', 'auto'];
-  const sortOptions = ['created_at', 'updated_at', 'public_id'];
+  const resourceTypes = ['', 'image', 'video', 'raw'];
+  const sortOptions = ['created_at', 'updated_at', 'resource_type'];
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -68,9 +69,10 @@ export default function GenerateReportForm() {
         setFormData({
           from_date: '',
           to_date: '',
-          resource_type: 'image',
+          resource_type: '',
           exclude_folders: '',
-          sort_by: 'created_at',
+          sort_by: 'accessed_at',
+          sort_order: 'desc',
         });
       }, 2000);
     } catch (error: unknown) {
@@ -134,7 +136,12 @@ export default function GenerateReportForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium">Resource Type</label>
+            <label className="block text-sm font-medium">
+              Resource Type{' '}
+              <span className="text-xs text-neutral-500">
+                (Leave blank for all types)
+              </span>
+            </label>
             <select
               name="resource_type"
               value={formData.resource_type}
@@ -151,7 +158,10 @@ export default function GenerateReportForm() {
 
           <div className="space-y-2">
             <label className="block text-sm font-medium">
-              Exclude Folders (comma-separated)
+              Exclude Folders{' '}
+              <span className="text-xs text-neutral-500">
+                (comma-separated, up to 50)
+              </span>
             </label>
             <input
               type="text"
@@ -163,20 +173,37 @@ export default function GenerateReportForm() {
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Sort By</label>
-            <select
-              name="sort_by"
-              value={formData.sort_by}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md"
-            >
-              {sortOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option.replace('_', ' ')}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-1">Sort By</label>
+              <select
+                name="sort_by"
+                value={formData.sort_by}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-md"
+              >
+                {sortOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-1">
+                Sort Order
+              </label>
+              <select
+                name="sort_order"
+                value={formData.sort_order}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+            </div>
           </div>
 
           <Button type="submit" disabled={isLoading} className="w-full">
