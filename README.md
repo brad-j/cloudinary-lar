@@ -4,6 +4,9 @@ A Next.js application that provides a user interface for managing and viewing Cl
 
 > **Disclaimer**: This is an independent, open-source project and is not officially affiliated with, endorsed by, or connected to Cloudinary. While it uses Cloudinary's API, it is maintained independently.
 
+⚠️ Development Status
+This project is in early development and actively being worked on. While functional, you may encounter bugs or incomplete features. The API and functionality are subject to change as I improve the application. I welcome feedback and contributions to help make it better!
+
 ## Features
 
 - Generate new Last Access Reports
